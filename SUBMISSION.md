@@ -4,7 +4,7 @@ Git repository:
 https://github.com/pk802551/AssigmentTimelLineDashbordRepo
 
 Live deployed link:
-Add your Vercel or Netlify production URL here after import/deploy.
+https://pk802551.github.io/AssigmentTimelLineDashbordRepo/
 
 Demo video:
 Add your Loom, Google Drive, or YouTube unlisted URL here after recording.
