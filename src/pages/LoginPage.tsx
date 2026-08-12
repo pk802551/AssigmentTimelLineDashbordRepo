@@ -32,35 +32,37 @@ export function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const heroImage = `${import.meta.env.BASE_URL}factory_analytics_hero.jpg`;
-  const timelineImage = `${import.meta.env.BASE_URL}industrial_line_timeline.jpg`;
+  const heroBg = `${import.meta.env.BASE_URL}factory_analytics_hero.jpg`;
+  const lineBg = `${import.meta.env.BASE_URL}industrial_line_timeline.jpg`;
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     setError('');
-    if (!username.trim() || !password.trim()) {
+
+    const u = username.trim();
+    const p = password.trim();
+
+    if (!u || !p) {
       setError('Username and password are required.');
       return;
     }
 
     setLoading(true);
     try {
-      await login(username.trim(), password);
+      await login(u, p);
       navigate('/', { replace: true });
     } catch (err) {
-      const message =
-        err instanceof ApiError && err.status === 401
-          ? 'Invalid username or password.'
-          : err instanceof Error
-            ? err.message
-            : 'Login failed.';
-      setError(message);
+      if (err instanceof ApiError && err.status === 401) {
+        setError('Invalid username or password.');
+      } else {
+        setError(err instanceof Error ? err.message : 'Login failed.');
+      }
     } finally {
       setLoading(false);
     }
   }
 
-  const fillTestCredentials = () => {
+  const handleQuickFill = () => {
     setUsername('analytics_user');
     setPassword('dashboard123');
     setError('');
@@ -91,7 +93,6 @@ export function LoginPage() {
             background: '#ffffff',
           }}
         >
-          {/* Left Hero Section with Realistic Manufacturing Imagery */}
           <Box
             sx={{
               flex: { md: 1.1 },
@@ -105,7 +106,6 @@ export function LoginPage() {
               overflow: 'hidden',
             }}
           >
-            {/* Background Ambient Glow */}
             <Box
               sx={{
                 position: 'absolute',
@@ -119,7 +119,6 @@ export function LoginPage() {
               }}
             />
 
-            {/* Header Brand */}
             <Box position="relative" zIndex={2}>
               <Stack direction="row" alignItems="center" gap={1.5} mb={2}>
                 <Avatar
@@ -143,7 +142,6 @@ export function LoginPage() {
               </Stack>
             </Box>
 
-            {/* Realistic Dashboard Image Showcase */}
             <Box position="relative" zIndex={2} my={{ xs: 3, md: 4 }}>
               <Box
                 sx={{
@@ -161,8 +159,8 @@ export function LoginPage() {
               >
                 <Box
                   component="img"
-                  src={heroImage}
-                  alt="Industrial Machine Timeline Dashboard"
+                  src={heroBg}
+                  alt="Dashboard Preview"
                   sx={{
                     width: '100%',
                     height: { xs: 180, sm: 220, md: 240 },
@@ -194,7 +192,6 @@ export function LoginPage() {
                 />
               </Box>
 
-              {/* Second Realistic Image Preview Thumbnail */}
               <Box
                 sx={{
                   display: { xs: 'none', sm: 'flex' },
@@ -210,8 +207,8 @@ export function LoginPage() {
               >
                 <Box
                   component="img"
-                  src={timelineImage}
-                  alt="Assembly Line Monitoring"
+                  src={lineBg}
+                  alt="Line Monitoring"
                   sx={{
                     width: 64,
                     height: 48,
@@ -230,7 +227,6 @@ export function LoginPage() {
               </Box>
             </Box>
 
-            {/* Feature Highlights */}
             <Stack direction="row" gap={2} flexWrap="wrap" position="relative" zIndex={2}>
               <Stack direction="row" alignItems="center" gap={0.75}>
                 <PrecisionManufacturingIcon sx={{ color: '#2fa99b', fontSize: 18 }} />
@@ -247,7 +243,6 @@ export function LoginPage() {
             </Stack>
           </Box>
 
-          {/* Right Form Section */}
           <Box
             sx={{
               flex: { md: 0.9 },
@@ -277,11 +272,11 @@ export function LoginPage() {
               <TextField
                 label="Username"
                 value={username}
-                onChange={(event) => setUsername(event.target.value)}
+                onChange={(e) => setUsername(e.target.value)}
                 autoComplete="username"
                 fullWidth
                 variant="outlined"
-                placeholder="e.g. analytics_user"
+                placeholder="analytics_user"
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: 2,
@@ -293,7 +288,7 @@ export function LoginPage() {
                 label="Password"
                 type={showPassword ? 'text' : 'password'}
                 value={password}
-                onChange={(event) => setPassword(event.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
                 fullWidth
                 variant="outlined"
@@ -307,7 +302,7 @@ export function LoginPage() {
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="toggle password visibility"
-                        onClick={() => setShowPassword((show) => !show)}
+                        onClick={() => setShowPassword((prev) => !prev)}
                         onMouseDown={(e) => e.preventDefault()}
                         edge="end"
                       >
@@ -335,7 +330,6 @@ export function LoginPage() {
                 {loading ? 'Signing in...' : 'Sign in to Dashboard'}
               </Button>
 
-              {/* Quick Fill Test Credentials Box */}
               <Paper
                 variant="outlined"
                 sx={{
@@ -357,7 +351,7 @@ export function LoginPage() {
                       </Typography>
                     </Box>
                   </Stack>
-                  <Button size="small" variant="text" onClick={fillTestCredentials} sx={{ fontWeight: 700 }}>
+                  <Button size="small" variant="text" onClick={handleQuickFill} sx={{ fontWeight: 700 }}>
                     Auto Fill
                   </Button>
                 </Stack>
@@ -369,4 +363,5 @@ export function LoginPage() {
     </Box>
   );
 }
+
 
